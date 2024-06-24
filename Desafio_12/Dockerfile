@@ -1,11 +1,12 @@
 # Dockerfile para usar Ubuntu con servidor web Nginx
-FROM ubuntu:latest
+FROM nginx:mainline-alpine
 
-RUN apt-get update && apt-get install -y nginx
+RUN rm /etc/nginx/conf.d/*
 
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY site/ /var/www/html
+ADD site.conf /etc/nginx/conf.d/
 
-EXPOSE 80
+ADD /site/index.html /usr/share/nginx/html/
+
+EXPOSE 82
 
 CMD ["nginx", "-g", "daemon off;"]
