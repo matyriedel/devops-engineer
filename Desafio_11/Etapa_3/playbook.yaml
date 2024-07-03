@@ -1,0 +1,12 @@
+name: Ensure web server is installed hosts: webserver become: true tasks:
+
+name: Update apt cache
+apt: update_cache=yes
+
+name: Install Apache
+apt: name=apache2 state=present
+
+name: Write the index.html file
+copy:
+  content: "El servidor Web del Desafio 11 de Matias Riedel esta funcionando"
+  dest: /var/www/html/index.html
