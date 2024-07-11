@@ -1,0 +1,43 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check Repository
+      uses: actions/checkout@v2
+
+    - name: Docker Build
+      uses: docker/setup-buildx-action@v1
+
+    - name: Login Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build Docker image
+      run: docker build -t desafio13:latest .
+
+    - name: Run 
+      run: docker run --rm -i hadolint/hadolint < Dockerfile
+
+    - name: Test App Desafio
+      run: |
+        docker build -t desafio13:test .
+        docker run desafio13:test pytest tests/
+
+    - name: Push Docker image
+      run: docker push desafio13:latest
+
+    - name: Run container
+      run: |
+        docker stop desafio13-container || true
+        docker rm desafio13-container || true
+        docker run -d --name desafio13-container -p 80:80 desafio13:latest

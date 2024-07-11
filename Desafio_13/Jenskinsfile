@@ -1,0 +1,60 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
+    }
+
+    stages {
+        stage('Build Image') {
+            steps {
+                script {
+                    docker.build('myapp:latest', '.')
+                }
+            }
+        }
+
+        stage('Run Linting') {
+            steps {
+                sh 'docker run --rm -i hadolint/hadolint < Dockerfile'
+            }
+        }
+
+        stage('Test Application') {
+            steps {
+                script {
+                    docker.build('myapp:test', '.').inside {
+                        sh 'pytest tests/'
+                    }
+                }
+            }
+        }
+
+        stage('Deploy Image') {
+            steps {
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', 'DOCKER_HUB_CREDENTIALS') {
+                        docker.image('myapp:latest').push()
+                    }
+                }
+            }
+        }
+
+        stage('Run Container') {
+            steps {
+                script {
+                    try {
+                        sh 'docker rm -f myapp-container || true'
+                    } catch (Exception e) {
+                        echo 'Container not running'
+                    }
+                    sh 'docker run -d --name myapp-container -p 80:80 myapp:latest'
+                }
+            }
+        }
+    }
+
+    triggers {
+        cron('H H * * *')
+    }
+}
