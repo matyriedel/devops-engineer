@@ -1,0 +1,24 @@
+replicaCount: 3
+
+image:
+  repository: mriedel/myapp
+  pullPolicy: IfNotPresent
+  tag: latest
+
+service:
+  type: LoadBalancer
+  port: 80
+
+configmap:
+  FLASK_ENV: production
+
+secret:
+  SECRET_KEY: c2VjcmV0X2tleQ==
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
