@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: desafio14
+  labels:
+    app: myapp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: myapp
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp
+        image: mriedel/desafio13:latest
+        ports:
+        - containerPort: 80
+        env:
+          - name: FLASK_ENV
+            valueFrom:
+              configMapKeyRef:
+                name: desafio14-config
+                key: FLASK_ENV
+        volumeMounts:
+        - name: desafio14-volume
+          mountPath: /app/data
+      volumes:
+      - name: desafio14-volume
+        emptyDir: {}
