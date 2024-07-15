@@ -14,7 +14,7 @@ Name: Matias O. Riedel
 
 ##- Desafio 15 - Entregado
 
-##- Desafio 16 - 
+##- Desafio 16 - Entregado
 
 ##- Desafio 17 - 
 
