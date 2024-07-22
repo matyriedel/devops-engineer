@@ -18,7 +18,7 @@ Name: Matias O. Riedel
 
 ##- Desafio 17 - Entregado
 
-##- Desafio 18 - 
+##- Desafio 18 - Entregado
 
 ##- Desafio Final (Opcional) - 
 
